@@ -260,7 +260,7 @@ uint32 jpg_from_raw_length
 # 0x0208	JPEGDCTables	no	-
 # 0x0209	JPEGACTables	no	-
 # 0x0211	YCbCrCoefficients	rational64u[3]!	IFD0
-float64[3] ycb_cr_Coefficients
+float64[3] ycb_cr_coefficients
 # 0x0212	YCbCrSubSampling	int16u[2]!	IFD0	
 # 						'1 1' = YCbCr4:4:4 (1 1)
 # 						'1 2' = YCbCr4:4:0 (1 2)
