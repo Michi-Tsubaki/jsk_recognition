@@ -72,11 +72,66 @@ Use `device:=cpu` to force CPU inference.
 ros2 launch yolo_3d_ros yolo_3d.launch.py input_topic:=/top_camera/depth/color/points device:=cpu
 ```
 
+For a D405 aimed at shine muscat or grape bunches, use the WGISD fine-tuned grape
+segmentation model:
+
+```bash
+ros2 launch yolo_3d_ros d405_shine_muscat_finetuned.launch.py \
+  input_topic:=/camera/camera/depth/color/points
+```
+
+The fine-tuned model publishes only class `0: grape`. For the stock COCO-trained
+YOLO segmentation model, `grape`, `muscat`, `blueberry`, and `raspberry` are not
+available class names. The proxy launch below filters with the closest available
+COCO classes, ORed as `banana`, `apple`, `orange`, `broccoli`, and `potted plant`.
+
+```bash
+ros2 launch yolo_3d_ros d405_shine_muscat.launch.py \
+  input_topic:=/camera/camera/depth/color/points
+```
+
 Use another checkpoint only when needed, especially when you finetune the model,
 
 ```bash
 ros2 launch yolo_3d_ros yolo_3d.launch.py input_topic:=/top_camera/depth/color/points model:=/absolute/path/to/model.pt
 ```
+
+
+## WGISD Grape Fine-Tuning
+
+The committed `models/wgisd_grape_seg.pt` checkpoint was fine-tuned from
+`yolo11n-seg.pt` on Embrapa WGISD COCO polygon annotations converted to one
+`grape` class.
+
+Recreate the dataset from a local WGISD clone:
+
+```bash
+git clone https://github.com/thsant/wgisd.git /tmp/wgisd
+yolo_3d_ros/.venv/bin/python yolo_3d_ros/tools/prepare_wgisd_yolo_seg.py \
+  --wgisd-root /tmp/wgisd \
+  --output-dir /tmp/wgisd_yolo_seg
+```
+
+Run the same short fine-tuning job:
+
+```bash
+yolo_3d_ros/.venv/bin/python yolo_3d_ros/tools/train_wgisd_grape_seg.py \
+  --data /tmp/wgisd_yolo_seg/wgisd_grape_seg.yaml \
+  --model yolo11n-seg.pt \
+  --epochs 20 \
+  --imgsz 640 \
+  --batch 16 \
+  --device 0 \
+  --project /tmp/wgisd_runs \
+  --name wgisd_grape_seg \
+  --output-model yolo_3d_ros/models/wgisd_grape_seg.pt \
+  --exist-ok
+```
+
+This run converted 110 train images and 27 validation images. The final validation
+metrics were box mAP50 0.787 and mask mAP50 0.781 on WGISD's test polygon split.
+WGISD is CC BY-NC 4.0, so the fine-tuned checkpoint is not covered by this
+repository's Apache-2.0 license and should be treated as non-commercial.
 
 
 ## Topics
