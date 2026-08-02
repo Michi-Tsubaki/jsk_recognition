@@ -26,6 +26,9 @@ jobs:
           ROS_DISTRO: jazzy
           ROS_REPO: main
           UPSTREAM_WORKSPACE: yolo_3d_ros/jazzy.repos
+          TARGET_WORKSPACE: >-
+            yolo_3d_ros/yolo_3d_msgs
+            yolo_3d_ros/yolo_3d_ros
           ADDITIONAL_DEBS: >-
             curl
             python3-pip
