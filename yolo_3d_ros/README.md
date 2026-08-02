@@ -1,5 +1,7 @@
 # yolo_3d_ros
 
+[![ROS 2 Jazzy CI](https://github.com/Michi-Tsubaki/jsk_recognition/actions/workflows/ros2_jazzy.yml/badge.svg?branch=ros2)](https://github.com/Michi-Tsubaki/jsk_recognition/actions/workflows/ros2_jazzy.yml)
+
 ROS 2 packages for running Ultralytics YOLO instance segmentation on `sensor_msgs/msg/PointCloud2` stream and publishing 3D detections, segmented point clouds and bounding boxes.
 
 ![YOLO 3D debug image](figs/yolo_3d_debug_image.png)
