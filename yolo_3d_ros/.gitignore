@@ -1,0 +1,25 @@
+# ROS 2 / colcon
+build/
+install/
+log/
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Models and generated sample outputs
+*.pt
+*.onnx
+docs/images/generated_*.png
+test/data/redwood_rgbd_3s.npz
+test/data/open3d_download/
+yolo_3d_ros/launch/top_camera_segmentation.launch.xml
+yolo_3d_ros/rviz/top_camera_yolo_3d.rviz
+
+# Editors
+.vscode/
+.idea/
+test/data/bundlefusion_rgbd_3s.npz

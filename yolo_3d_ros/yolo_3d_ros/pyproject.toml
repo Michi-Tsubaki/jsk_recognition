@@ -1,0 +1,45 @@
+[project]
+name = "yolo-3d-ros-python-deps"
+version = "0.1.1"
+description = "Package-local Python dependencies for yolo_3d_ros"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+  "numpy>=1.26,<3",
+  "opencv-python>=4.9,<5,!=4.13.0.90",
+  "matplotlib>=3.8,<4",
+  "ultralytics==8.4.114",
+]
+
+[dependency-groups]
+test = [
+  "numpy>=1.26,<3",
+  "opencv-python>=4.9,<5,!=4.13.0.90",
+  "pytest>=8,<9",
+  "ruff>=0.12,<1",
+]
+
+[project.optional-dependencies]
+open3d = [
+  "open3d>=0.19,<0.20",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["test"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = [".venv", "build", "install", "log"]
+extend-include = [
+  "scripts/open3d_object_viewer",
+  "scripts/sample_pointcloud_publisher",
+  "scripts/segmented_object_listener",
+  "scripts/yolo_3d_node",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]

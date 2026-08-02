@@ -1,0 +1,27 @@
+yolo_3d:
+  ros__parameters:
+    input_topic: /camera/depth/points
+    detections_topic: /yolo_3d/detections
+    segmented_objects_topic: /yolo_3d/segmented_objects
+    segmented_points_topic: /yolo_3d/segmented_points
+    bounding_boxes_topic: /yolo_3d/bounding_boxes
+    debug_image_topic: /yolo_3d/debug_image
+
+    model: models/yolo26m-seg.pt
+    confidence: 0.25
+    iou: 0.70
+    image_size: 640
+    device: ""
+    classes: [-1]
+
+    mask_threshold: 0.50
+    min_points: 100
+    min_depth_m: 0.05
+    max_depth_m: 10.0
+    bbox_percentile: 1.0
+    max_points_per_object: 25000
+    random_seed: 0
+
+    publish_merged_cloud: true
+    publish_debug_image: true
+    log_every_n_frames: 1

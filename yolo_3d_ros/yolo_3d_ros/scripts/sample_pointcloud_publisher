@@ -1,0 +1,76 @@
+#!/usr/bin/env python3
+"""Publish the bundled compact RGB-D sequence as an organized PointCloud2 stream."""
+
+from pathlib import Path
+
+import rclpy
+from ament_index_python.packages import get_package_share_directory
+from rclpy.node import Node
+from rclpy.qos import qos_profile_sensor_data
+from sensor_msgs.msg import PointCloud2
+
+from yolo_3d_ros.ros_messages import organized_colored_pointcloud2
+from yolo_3d_ros.sample_data import depth_to_xyz, load_rgbd_sequence
+
+
+class SamplePointCloudPublisher(Node):
+    def __init__(self) -> None:
+        super().__init__("sample_pointcloud_publisher")
+        default_path = (
+            Path(get_package_share_directory("yolo_3d_ros"))
+            / "docs"
+            / "sample_rgbd_3s.npz"
+        )
+        self.declare_parameter("sequence_path", str(default_path))
+        self.declare_parameter("topic", "/camera/depth/points")
+        self.declare_parameter("frame_id", "camera_color_optical_frame")
+        self.declare_parameter("loop", True)
+
+        self._sequence = load_rgbd_sequence(str(self.get_parameter("sequence_path").value))
+        self._frame_id = str(self.get_parameter("frame_id").value)
+        self._loop = bool(self.get_parameter("loop").value)
+        self._index = 0
+        self._publisher = self.create_publisher(
+            PointCloud2,
+            str(self.get_parameter("topic").value),
+            qos_profile_sensor_data,
+        )
+        self._timer = self.create_timer(1.0 / self._sequence.fps, self._publish_frame)
+        self.get_logger().info(
+            f"Publishing {self._sequence.frame_count} organized frames at "
+            f"{self._sequence.fps:.1f} Hz ({self._sequence.duration_seconds:.1f} s): "
+            f"{self._sequence.source}"
+        )
+
+    def _publish_frame(self) -> None:
+        if self._index >= self._sequence.frame_count:
+            if self._loop:
+                self._index = 0
+            else:
+                self._timer.cancel()
+                self.get_logger().info("Finished sample sequence")
+                return
+        rgb = self._sequence.rgb_frame(self._index)
+        xyz = depth_to_xyz(self._sequence.depth_m[self._index], self._sequence.intrinsics)
+        header = PointCloud2().header
+        header.stamp = self.get_clock().now().to_msg()
+        header.frame_id = self._frame_id
+        self._publisher.publish(organized_colored_pointcloud2(header, xyz, rgb))
+        self._index += 1
+
+
+def main(args=None) -> None:
+    rclpy.init(args=args)
+    node = SamplePointCloudPublisher()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        if rclpy.ok():
+            rclpy.shutdown()
+
+
+if __name__ == "__main__":
+    main()

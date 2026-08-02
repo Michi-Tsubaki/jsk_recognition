@@ -1,0 +1,32 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/PointCloud2
+      Enabled: true
+      Name: Segmented points
+      Topic:
+        Value: /yolo_3d/segmented_points
+      Size (Pixels): 3
+      Style: Points
+      Color Transformer: RGB8
+    - Class: vision_msgs_rviz_plugins/BoundingBox3DArray
+      Enabled: true
+      Name: Bounding boxes
+      Topic:
+        Value: /yolo_3d/bounding_boxes
+    - Class: rviz_default_plugins/Image
+      Enabled: true
+      Name: YOLO debug image
+      Topic:
+        Value: /yolo_3d/debug_image
+  Enabled: true
+  Global Options:
+    Background Color: 48; 48; 48
+    Fixed Frame: camera_color_optical_frame
+  Name: root
+Window Geometry:
+  Height: 900
+  Width: 1400
