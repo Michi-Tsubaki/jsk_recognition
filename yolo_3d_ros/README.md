@@ -21,12 +21,12 @@ Make sure `~/.local/bin` is on `PATH` if `uv` was installed with `pip --user`.
 ## Build
 
 ```bash
-mkdir -p ~/catkin_ws/src
-cd ~/catkin_ws/src
+mkdir -p ~/colcon_ws/src
+cd ~/colcon_ws/src
 git clone https://github.com/Michi-Tsubaki/jsk_recognition.git -b ros2
-cd ~/catkin_ws
+cd ~/colcon_ws
 vcs import src < src/jsk_recognition/yolo_3d_ros/jazzy.repos
-source /opt/ros/jazzy/setup.bash
+source /opt/ros/$ROS_DISTRO/setup.bash
 rosdep update
 rosdep install --from-paths src -iry
 cd src/jsk_recognition/yolo_3d_ros
@@ -36,15 +36,14 @@ uv sync
 This creates `yolo_3d_ros/.venv`, installs the Python dependencies there.
 
 ```bash
-cd ~/catkin_ws
+cd ~/colcon_ws
 colcon build --packages-up-to yolo_3d_ros --symlink-install
 source install/setup.bash
 ```
 
 `colcon build` downloads `yolo26m-seg.pt`, verifies its SHA-256 hash and installs it to
-
 ```text
-~/catkin_ws/install/yolo_3d_ros/share/yolo_3d_ros/models/yolo26m-seg.pt
+~/colcon_ws/install/yolo_3d_ros/share/yolo_3d_ros/models/yolo26m-seg.pt
 ```
 
 
@@ -53,6 +52,8 @@ source install/setup.bash
 Start RealSense with aligned depth and ordered point clouds.
 
 ```bash
+sudo apt update
+sudo apt install ros-jazzy-realsense2-camera
 source /opt/ros/jazzy/setup.bash
 ros2 launch realsense2_camera rs_launch.py align_depth.enable:=true pointcloud.enable:=true pointcloud.ordered_pc:=true
 ```
@@ -61,7 +62,7 @@ Run YOLO 3D in another terminal.
 
 ```bash
 source /opt/ros/jazzy/setup.bash
-source ~/catkin_ws/install/setup.bash
+source ~/colcon_ws/install/setup.bash
 
 ros2 launch yolo_3d_ros yolo_3d.launch.py input_topic:=/top_camera/depth/color/points
 ```
