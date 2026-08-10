@@ -2,12 +2,9 @@
 <package format="3">
   <name>yolo_3d_ros</name>
   <version>0.1.1</version>
-  <description>
-    Segment organized RGB PointCloud2 streams with Ultralytics YOLO and publish
-    vision_msgs 3D detections plus per-object colored point clouds.
-  </description>
+  <description>Segment RGB PointCloud2 streams with YOLO and publish vision_msgs 3D detections and per-object colored point clouds.</description>
   <maintainer email="tsubaki@jsk.t.u-tokyo.ac.jp">Michitoshi Tsubaki</maintainer>
-  <license>Apache-2.0</license>
+  <license>AGPL-3.0-only</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
   <buildtool_depend>ament_cmake_python</buildtool_depend>

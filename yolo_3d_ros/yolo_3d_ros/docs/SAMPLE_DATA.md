@@ -129,4 +129,4 @@ PYTHONPATH=src python3 scripts/download_redwood_test_sequence.py \
 
 BundleFusion RGB-D scanning data is released under Creative Commons
 Attribution-NonCommercial-ShareAlike 4.0. The source pair, NPZ, and derived
-screenshots are therefore separate from this repository's Apache-2.0 code license.
+screenshots are therefore separate from this package's AGPL-3.0-only code license.

@@ -16,9 +16,8 @@ SHA-256: 16b636f04e8fb6a325b3370f22dc5e5535ff473e384f4d041fd28d788f6ee9f5
 Size: 54,750,385 bytes
 ```
 
-The checkpoint is not licensed under this repository's Apache-2.0 license. It is an
-Ultralytics asset subject to the Ultralytics AGPL-3.0 or Enterprise licensing terms.
-See `../licenses/ULTRALYTICS_AGPL-3.0.txt`.
+The checkpoint is an Ultralytics asset subject to the Ultralytics AGPL-3.0 or
+Enterprise licensing terms. See `../LICENSE` for the AGPL-3.0 text.
 
 
 ## WGISD grape checkpoint
@@ -41,6 +40,6 @@ box mAP50: 0.787
 mask mAP50: 0.781
 ```
 
-This checkpoint is not licensed under this repository's Apache-2.0 license. The
+This checkpoint is separate from this package's AGPL-3.0-only code license. The
 base Ultralytics checkpoint is subject to Ultralytics licensing terms, and WGISD is
 licensed under Creative Commons Attribution-NonCommercial 4.0 International.
