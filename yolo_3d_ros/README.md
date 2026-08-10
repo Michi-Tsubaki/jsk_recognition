@@ -29,7 +29,7 @@ This creates `yolo_3d_ros/.venv` and installs the Python dependencies there.
 
 ```bash
 cd <path to your colcon workspace>
-colcon build --packages-up-to yolo_3d_ros --symlink-install -DPython3_EXECUTABLE=/usr/bin/python3
+colcon build --packages-up-to yolo_3d_ros --symlink-install
 source install/setup.bash
 ```
 
