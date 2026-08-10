@@ -1,5 +1,0 @@
-Bundled public RGB-D geometry smoke-test result (frame 0)
-The masks are deterministic test fixtures, not neural-network inference.
-fixture-bin-left: score=0.990, position=(-0.1113, -0.0537, 1.5550) m, source_points=8113, published_points=5000
-fixture-bin-center: score=0.980, position=(0.2773, -0.1735, 1.6580) m, source_points=10768, published_points=5000
-fixture-bin-right: score=0.970, position=(0.6355, -0.2069, 1.5470) m, source_points=10943, published_points=5000
