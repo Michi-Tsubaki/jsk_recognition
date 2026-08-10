@@ -6,28 +6,30 @@
   <maintainer email="tsubaki@jsk.t.u-tokyo.ac.jp">Michitoshi Tsubaki</maintainer>
   <license>AGPL-3.0-only</license>
 
-  <buildtool_depend>ament_cmake</buildtool_depend>
-  <buildtool_depend>ament_cmake_python</buildtool_depend>
+  <buildtool_depend condition="$ROS_VERSION == 1">catkin</buildtool_depend>
+  <buildtool_depend condition="$ROS_VERSION == 2">ament_cmake</buildtool_depend>
+  <buildtool_depend condition="$ROS_VERSION == 2">ament_cmake_python</buildtool_depend>
 
-  <build_depend>curl</build_depend>
+  <build_depend condition="$ROS_VERSION == 2">curl</build_depend>
 
-  <depend>ament_index_python</depend>
-  <depend>launch</depend>
-  <depend>launch_xml</depend>
-  <depend>launch_ros</depend>
-  <depend>rclpy</depend>
-  <depend>sensor_msgs</depend>
-  <depend>vision_msgs</depend>
-  <depend>yolo_3d_msgs</depend>
+  <depend condition="$ROS_VERSION == 2">ament_index_python</depend>
+  <depend condition="$ROS_VERSION == 2">launch</depend>
+  <depend condition="$ROS_VERSION == 2">launch_xml</depend>
+  <depend condition="$ROS_VERSION == 2">launch_ros</depend>
+  <depend condition="$ROS_VERSION == 2">rclpy</depend>
+  <depend condition="$ROS_VERSION == 2">sensor_msgs</depend>
+  <depend condition="$ROS_VERSION == 2">vision_msgs</depend>
+  <depend condition="$ROS_VERSION == 2">yolo_3d_msgs</depend>
 
-  <exec_depend>vision_msgs_rviz_plugins</exec_depend>
-  <exec_depend>python3-numpy</exec_depend>
-  <exec_depend>python3-opencv</exec_depend>
+  <exec_depend condition="$ROS_VERSION == 2">vision_msgs_rviz_plugins</exec_depend>
+  <exec_depend condition="$ROS_VERSION == 2">python3-numpy</exec_depend>
+  <exec_depend condition="$ROS_VERSION == 2">python3-opencv</exec_depend>
 
-  <test_depend>ament_cmake_pytest</test_depend>
-  <test_depend>python3-pytest</test_depend>
+  <test_depend condition="$ROS_VERSION == 2">ament_cmake_pytest</test_depend>
+  <test_depend condition="$ROS_VERSION == 2">python3-pytest</test_depend>
 
   <export>
-    <build_type>ament_cmake</build_type>
+    <build_type condition="$ROS_VERSION == 1">catkin</build_type>
+    <build_type condition="$ROS_VERSION == 2">ament_cmake</build_type>
   </export>
 </package>

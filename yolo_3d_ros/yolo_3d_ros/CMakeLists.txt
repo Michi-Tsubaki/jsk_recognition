@@ -1,5 +1,60 @@
-cmake_minimum_required(VERSION 3.16)
+if("$ENV{ROS_VERSION}" STREQUAL "")
+  set(ENV{ROS_VERSION} 1)
+endif()
+
+if("$ENV{ROS_VERSION}" EQUAL 1)
+  cmake_minimum_required(VERSION 2.8.12)
+elseif("$ENV{ROS_VERSION}" EQUAL 2)
+  cmake_minimum_required(VERSION 3.16)
+else()
+  message(FATAL_ERROR "Unsupported ROS_VERSION: $ENV{ROS_VERSION}")
+endif()
+
 project(yolo_3d_ros)
+
+if("$ENV{ROS_VERSION}" EQUAL 1)
+  find_package(catkin QUIET)
+  if(catkin_FOUND)
+    catkin_package()
+  endif()
+  message(STATUS "${PROJECT_NAME} is a ROS2 package. Skipping ROS1 build.")
+  return()
+endif()
+
+set(_YOLO_3D_PYTHON3_CANDIDATE "${Python3_EXECUTABLE}")
+if(NOT _YOLO_3D_PYTHON3_CANDIDATE)
+  find_program(_YOLO_3D_PYTHON3_CANDIDATE NAMES python3)
+endif()
+if(_YOLO_3D_PYTHON3_CANDIDATE)
+  execute_process(
+    COMMAND "${_YOLO_3D_PYTHON3_CANDIDATE}" -c "import catkin_pkg"
+    RESULT_VARIABLE _YOLO_3D_PYTHON3_HAS_CATKIN_PKG
+    OUTPUT_QUIET
+    ERROR_QUIET
+  )
+else()
+  set(_YOLO_3D_PYTHON3_HAS_CATKIN_PKG 1)
+endif()
+if(NOT _YOLO_3D_PYTHON3_HAS_CATKIN_PKG EQUAL 0)
+  find_program(_YOLO_3D_SYSTEM_PYTHON3 NAMES python3 HINTS /usr/bin /bin NO_DEFAULT_PATH)
+  if(_YOLO_3D_SYSTEM_PYTHON3)
+    execute_process(
+      COMMAND "${_YOLO_3D_SYSTEM_PYTHON3}" -c "import catkin_pkg"
+      RESULT_VARIABLE _YOLO_3D_SYSTEM_PYTHON3_HAS_CATKIN_PKG
+      OUTPUT_QUIET
+      ERROR_QUIET
+    )
+    if(_YOLO_3D_SYSTEM_PYTHON3_HAS_CATKIN_PKG EQUAL 0)
+      set(Python3_EXECUTABLE "${_YOLO_3D_SYSTEM_PYTHON3}"
+        CACHE FILEPATH "Python interpreter used by ament_cmake" FORCE
+      )
+      message(STATUS
+        "Using ${Python3_EXECUTABLE} for ament_cmake because "
+        "${_YOLO_3D_PYTHON3_CANDIDATE} cannot import catkin_pkg"
+      )
+    endif()
+  endif()
+endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
@@ -78,8 +133,6 @@ add_custom_target(prepare_yolo_3d_python_env ALL
   VERBATIM
 )
 
-# Pin the default checkpoint to an immutable Ultralytics release asset and verify it
-# before installation. The checkpoint remains subject to Ultralytics' own license.
 set(YOLO_3D_MODEL_FILENAME "yolo26m-seg.pt")
 set(
   YOLO_3D_MODEL_URL
@@ -157,14 +210,10 @@ ament_python_install_package(${PROJECT_NAME}
 file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/scripts")
 set(YOLO_3D_SCRIPT_WRAPPERS)
 foreach(script_name IN ITEMS
-    open3d_object_viewer
-    sample_pointcloud_publisher
-    segmented_object_listener
     yolo_3d_node
 )
-  set(SCRIPT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/scripts/${script_name}")
   configure_file(
-    cmake/python_entrypoint.in
+    "scripts/${script_name}"
     "${CMAKE_CURRENT_BINARY_DIR}/scripts/${script_name}"
     @ONLY
   )
@@ -181,15 +230,9 @@ install(PROGRAMS
 
 install(DIRECTORY
   config
-  docs
   launch
   models
   rviz
-  DESTINATION share/${PROJECT_NAME}
-)
-
-install(FILES
-  LICENSE
   DESTINATION share/${PROJECT_NAME}
 )
 
@@ -206,9 +249,6 @@ if(BUILD_TESTING)
     APPEND_ENV "PYTHONPATH=${CMAKE_CURRENT_SOURCE_DIR}/src"
   )
   ament_add_pytest_test(test_model_stage test/test_model_stage.py
-    APPEND_ENV "PYTHONPATH=${CMAKE_CURRENT_SOURCE_DIR}/src"
-  )
-  ament_add_pytest_test(test_sample_sequence test/test_sample_sequence.py
     APPEND_ENV "PYTHONPATH=${CMAKE_CURRENT_SOURCE_DIR}/src"
   )
   ament_add_pytest_test(test_ros_messages test/test_ros_messages.py
