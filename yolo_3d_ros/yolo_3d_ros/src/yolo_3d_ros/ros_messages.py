@@ -63,24 +63,6 @@ def colored_pointcloud2(header, xyz: np.ndarray, rgb: np.ndarray) -> PointCloud2
     return message
 
 
-def organized_colored_pointcloud2(header, xyz: np.ndarray, rgb: np.ndarray) -> PointCloud2:
-    """Create an organized HxW XYZRGB PointCloud2 for the sample publisher."""
-
-    xyz = np.asarray(xyz, dtype=np.float32)
-    rgb = np.asarray(rgb, dtype=np.uint8)
-    if xyz.ndim != 3 or xyz.shape[2] != 3 or rgb.shape != xyz.shape:
-        raise ValueError("organized xyz/rgb arrays must both have shape (H,W,3)")
-    height, width, _ = xyz.shape
-    flat_xyz = xyz.reshape(-1, 3)
-    flat_rgb = rgb.reshape(-1, 3)
-    compact = colored_pointcloud2(header, flat_xyz, flat_rgb)
-    compact.height = height
-    compact.width = width
-    compact.row_step = compact.point_step * width
-    compact.is_dense = bool(np.isfinite(xyz).all())
-    return compact
-
-
 def detection3d(header, instance: SegmentedInstance) -> Detection3D:
     """Convert one extracted instance to a standards-based 3D detection.
 
