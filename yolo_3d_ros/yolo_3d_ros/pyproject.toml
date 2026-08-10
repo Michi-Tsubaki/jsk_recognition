@@ -1,7 +1,7 @@
 [project]
-name = "yolo-3d-ros-python-deps"
+name = "yolo-3d-ros"
 version = "0.1.1"
-description = "Package-local Python dependencies for yolo_3d_ros"
+description = "Python dependencies for yolo_3d_ros"
 maintainers = [
   { name = "Michitoshi Tsubaki", email = "tsubaki@jsk.t.u-tokyo.ac.jp" },
 ]
