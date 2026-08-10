@@ -7,7 +7,53 @@ find_package(rclpy REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(vision_msgs REQUIRED)
 find_package(yolo_3d_msgs REQUIRED)
-find_program(UV_EXECUTABLE NAMES uv REQUIRED)
+
+option(
+  YOLO_3D_INSTALL_UV_IF_MISSING
+  "Install uv with Astral's installer if uv is not found"
+  ON
+)
+
+find_program(UV_EXECUTABLE NAMES uv)
+if(NOT UV_EXECUTABLE)
+  if(NOT YOLO_3D_INSTALL_UV_IF_MISSING)
+    message(FATAL_ERROR
+      "uv was not found. Install uv, or enable YOLO_3D_INSTALL_UV_IF_MISSING."
+    )
+  endif()
+
+  find_program(CURL_EXECUTABLE NAMES curl)
+  if(NOT CURL_EXECUTABLE)
+    message(FATAL_ERROR
+      "uv was not found and curl is required to install it. "
+      "Install curl or install uv manually."
+    )
+  endif()
+
+  message(STATUS "uv was not found; installing uv with Astral's installer")
+  execute_process(
+    COMMAND sh -c "\"${CURL_EXECUTABLE}\" -LsSf https://astral.sh/uv/install.sh | sh"
+    RESULT_VARIABLE UV_INSTALL_RESULT
+  )
+  if(NOT UV_INSTALL_RESULT EQUAL 0)
+    message(FATAL_ERROR
+      "Failed to install uv with Astral's installer "
+      "(exit code: ${UV_INSTALL_RESULT})."
+    )
+  endif()
+
+  unset(UV_EXECUTABLE CACHE)
+  find_program(UV_EXECUTABLE
+    NAMES uv
+    HINTS "$ENV{UV_INSTALL_DIR}" "$ENV{XDG_BIN_HOME}" "$ENV{HOME}/.local/bin"
+  )
+  if(NOT UV_EXECUTABLE)
+    message(FATAL_ERROR
+      "uv was installed, but the uv executable was not found. "
+      "Add the uv install directory to PATH and rerun CMake."
+    )
+  endif()
+endif()
 
 set(
   YOLO_3D_VENV_DIR
